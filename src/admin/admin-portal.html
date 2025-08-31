@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZawadiTap Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar-transition { transition: all 0.3s ease; }
+        .card-hover { transition: transform 0.2s ease; }
+        .card-hover:hover { transform: translateY(-2px); }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-800">ZawadiTap Admin</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="notificationsBtn" class="p-2 text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-bell"></i>
+                            <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <button id="profileBtn" class="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+                            <img id="userAvatar" class="w-8 h-8 rounded-full" src="https://via.placeholder.com/32" alt="Profile">
+                            <span id="userName">Admin User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex h-screen pt-16">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-white shadow-lg w-64 sidebar-transition">
+            <div class="p-4">
+                <nav class="space-y-2">
+                    <a href="#dashboard" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 active">
+                        <i class="fas fa-tachometer-alt w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#organizations" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-building w-5"></i>
+                        <span>Organizations</span>
+                    </a>
+                    <a href="#events" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-calendar-alt w-5"></i>
+                        <span>Events</span>
+                    </a>
+                    <a href="#users" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-users w-5"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#gifts" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-gift w-5"></i>
+                        <span>Gifts</span>
+                    </a>
+                    <a href="#reports" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-chart-bar w-5"></i>
+                        <span>Reports</span>
+                    </a>
+                    <a href="#audit" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-history w-5"></i>
+                        <span>Audit Logs</span>
+                    </a>
+                    <a href="#settings" class="nav-item flex items-center space-x-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+                    <p class="text-gray-600">Welcome to ZawadiTap Admin Portal</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                <i class="fas fa-building text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Organizations</p>
+                                <p id="totalOrgs" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Total Users</p>
+                                <p id="totalUsers" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                <i class="fas fa-calendar-alt text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Active Events</p>
+                                <p id="activeEvents" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-gift text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Gifts Redeemed</p>
+                                <p id="giftsRedeemed" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">User Growth</h3>
+                        <canvas id="userGrowthChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Event Participation</h3>
+                        <canvas id="eventParticipationChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+                    <div id="recentActivity" class="space-y-3">
+                        <!-- Activity items will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Organizations Section -->
+            <section id="organizations" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Organizations</h2>
+                    <p class="text-gray-600">Manage all registered organizations</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex space-x-2">
+                            <input type="text" id="orgSearch" placeholder="Search organizations..." class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="orgSearchBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                        </div>
+                        <button id="addOrgBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-plus mr-2"></i>Add Organization
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Country</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="organizationsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Organizations will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Events</h2>
+                    <p class="text-gray-600">Manage all events across organizations</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex space-x-2">
+                            <input type="text" id="eventSearch" placeholder="Search events..." class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="eventStatusFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <button id="eventSearchBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Participants</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eventsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Events will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Users</h2>
+                    <p class="text-gray-600">Manage all platform users</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex space-x-2">
+                            <input type="text" id="userSearch" placeholder="Search users..." class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="userVerifiedFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Users</option>
+                                <option value="true">Verified Only</option>
+                                <option value="false">Unverified Only</option>
+                            </select>
+                            <button id="userSearchBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Verified</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Events Participated</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Active</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Users will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gifts Section -->
+            <section id="gifts" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Gifts</h2>
+                    <p class="text-gray-600">Manage gift inventory and redemption</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex space-x-2">
+                            <input type="text" id="giftSearch" placeholder="Search gifts..." class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="giftClaimedFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Gifts</option>
+                                <option value="true">Claimed Only</option>
+                                <option value="false">Unclaimed Only</option>
+                            </select>
+                            <button id="giftSearchBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Claimed By</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="giftsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Gifts will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Reports & Analytics</h2>
+                    <p class="text-gray-600">Generate comprehensive reports and analytics</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Organizations Report</h3>
+                        <p class="text-gray-600 mb-4">Export comprehensive organization data</p>
+                        <button id="exportOrgsBtn" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-download mr-2"></i>Export Report
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Events Report</h3>
+                        <p class="text-gray-600 mb-4">Export event participation data</p>
+                        <button id="exportEventsBtn" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-download mr-2"></i>Export Report
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Users Report</h3>
+                        <p class="text-gray-600 mb-4">Export user activity data</p>
+                        <button id="exportUsersBtn" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                            <i class="fas fa-download mr-2"></i>Export Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Audit Logs Section -->
+            <section id="audit" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Audit Logs</h2>
+                    <p class="text-gray-600">Monitor system activity and user actions</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex space-x-2">
+                            <input type="text" id="auditSearch" placeholder="Search actions..." class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="date" id="auditStartDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="date" id="auditEndDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button id="auditSearchBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Organization</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Audit logs will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="p-6 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Settings</h2>
+                    <p class="text-gray-600">Configure system settings and preferences</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">System Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">API Base URL</label>
+                                <input type="text" id="apiBaseUrl" value="http://localhost:3000" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Refresh Interval (seconds)</label>
+                                <input type="number" id="refreshInterval" value="30" min="10" max="300" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <button id="saveSettingsBtn" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">User Preferences</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="darkMode" class="mr-2">
+                                <label class="text-sm font-medium text-gray-700">Dark Mode</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="notifications" checked class="mr-2">
+                                <label class="text-sm font-medium text-gray-700">Enable Notifications</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="autoRefresh" checked class="mr-2">
+                                <label class="text-sm font-medium text-gray-700">Auto Refresh Dashboard</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div id="modalContent" class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Portal JavaScript
+        class ZawadiTapAdmin {
+            constructor() {
+                this.apiBaseUrl = 'http://localhost:3000';
+                this.currentUser = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadDashboard();
+                this.setupCharts();
+                this.startAutoRefresh();
+            }
+
+            setupEventListeners() {
+                // Navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.navigateToSection(item.getAttribute('href').substring(1));
+                    });
+                });
+
+                // Search functionality
+                document.getElementById('orgSearchBtn')?.addEventListener('click', () => this.searchOrganizations());
+                document.getElementById('eventSearchBtn')?.addEventListener('click', () => this.searchEvents());
+                document.getElementById('userSearchBtn')?.addEventListener('click', () => this.searchUsers());
+                document.getElementById('giftSearchBtn')?.addEventListener('click', () => this.searchGifts());
+                document.getElementById('auditSearchBtn')?.addEventListener('click', () => this.searchAuditLogs());
+
+                // Export buttons
+                document.getElementById('exportOrgsBtn')?.addEventListener('click', () => this.exportOrganizations());
+                document.getElementById('exportEventsBtn')?.addEventListener('click', () => this.exportEvents());
+                document.getElementById('exportUsersBtn')?.addEventListener('click', () => this.exportUsers());
+
+                // Settings
+                document.getElementById('saveSettingsBtn')?.addEventListener('click', () => this.saveSettings());
+            }
+
+            navigateToSection(sectionId) {
+                // Hide all sections
+                document.querySelectorAll('main > section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+
+                // Show target section
+                document.getElementById(sectionId)?.classList.remove('hidden');
+
+                // Update navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[href="#${sectionId}"]`)?.classList.add('active');
+
+                // Load section data
+                this.loadSectionData(sectionId);
+            }
+
+            async loadSectionData(sectionId) {
+                try {
+                    switch (sectionId) {
+                        case 'organizations':
+                            await this.loadOrganizations();
+                            break;
+                        case 'events':
+                            await this.loadEvents();
+                            break;
+                        case 'users':
+                            await this.loadUsers();
+                            break;
+                        case 'gifts':
+                            await this.loadGifts();
+                            break;
+                        case 'audit':
+                            await this.loadAuditLogs();
+                            break;
+                    }
+                } catch (error) {
+                    console.error(`Error loading ${sectionId}:`, error);
+                    this.showNotification('Error loading data', 'error');
+                }
+            }
+
+            async loadDashboard() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/admin/dashboard`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.getAuthToken()}`,
+                        },
+                    });
+
+                    if (!response.ok) throw new Error('Failed to load dashboard');
+
+                    const data = await response.json();
+                    this.updateDashboardStats(data);
+                    this.updateRecentActivity(data.recentActivity);
+                } catch (error) {
+                    console.error('Error loading dashboard:', error);
+                }
+            }
+
+            updateDashboardStats(data) {
+                const { overview } = data;
+                document.getElementById('totalOrgs').textContent = overview.totalOrganizations || 0;
+                document.getElementById('totalUsers').textContent = overview.totalUsers || 0;
+                document.getElementById('activeEvents').textContent = overview.activeEvents || 0;
+                document.getElementById('giftsRedeemed').textContent = overview.giftsRedeemed || 0;
+            }
+
+            updateRecentActivity(activities) {
+                const container = document.getElementById('recentActivity');
+                if (!container || !activities) return;
+
+                container.innerHTML = activities.map(activity => `
+                    <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-800">${activity.action}</p>
+                            <p class="text-xs text-gray-500">${activity.userPhone || activity.orgName || 'System'} - ${new Date(activity.createdAt).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            setupCharts() {
+                // User Growth Chart
+                const userCtx = document.getElementById('userGrowthChart')?.getContext('2d');
+                if (userCtx) {
+                    new Chart(userCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: 'New Users',
+                                data: [65, 78, 90, 105, 120, 135],
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Event Participation Chart
+                const eventCtx = document.getElementById('eventParticipationChart')?.getContext('2d');
+                if (eventCtx) {
+                    new Chart(eventCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Active', 'Completed', 'Cancelled'],
+                            datasets: [{
+                                data: [12, 19, 3],
+                                backgroundColor: [
+                                    'rgb(34, 197, 94)',
+                                    'rgb(59, 130, 246)',
+                                    'rgb(239, 68, 68)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            startAutoRefresh() {
+                const interval = document.getElementById('refreshInterval')?.value || 30;
+                setInterval(() => {
+                    if (document.getElementById('autoRefresh')?.checked) {
+                        this.loadDashboard();
+                    }
+                }, interval * 1000);
+            }
+
+            async loadOrganizations() {
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/admin/organizations`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.getAuthToken()}`,
+                        },
+                    });
+
+                    if (!response.ok) throw new Error('Failed to load organizations');
+
+                    const data = await response.json();
+                    this.renderOrganizationsTable(data.organizations);
+                } catch (error) {
+                    console.error('Error loading organizations:', error);
+                }
+            }
+
+            renderOrganizationsTable(organizations) {
+                const tbody = document.getElementById('organizationsTable');
+                if (!tbody) return;
+
+                tbody.innerHTML = organizations.map(org => `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <img class="h-10 w-10 rounded-full" src="${org.logo || 'https://via.placeholder.com/40'}" alt="">
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">${org.name}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${org.country}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${org.adminEmail}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                ${org.status || 'active'}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button class="text-blue-600 hover:text-blue-900 mr-2">Edit</button>
+                            <button class="text-red-600 hover:text-red-900">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            async searchOrganizations() {
+                const query = document.getElementById('orgSearch').value;
+                if (!query || query.length < 2) return;
+
+                try {
+                    const response = await fetch(`${this.apiBaseUrl}/admin/organizations/search?q=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.getAuthToken()}`,
+                        },
+                    });
+
+                    if (!response.ok) throw new Error('Search failed');
+
+                    const organizations = await response.json();
+                    this.renderOrganizationsTable(organizations);
+                } catch (error) {
+                    console.error('Search error:', error);
+                }
+            }
+
+            // Similar methods for other sections...
+            async loadEvents() {
+                // Implementation for loading events
+            }
+
+            async loadUsers() {
+                // Implementation for loading users
+            }
+
+            async loadGifts() {
+                // Implementation for loading gifts
+            }
+
+            async loadAuditLogs() {
+                // Implementation for loading audit logs
+            }
+
+            getAuthToken() {
+                // Get token from localStorage or session
+                return localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
+            }
+
+            showNotification(message, type = 'info') {
+                // Implementation for showing notifications
+                console.log(`${type.toUpperCase()}: ${message}`);
+            }
+
+            saveSettings() {
+                const settings = {
+                    apiBaseUrl: document.getElementById('apiBaseUrl').value,
+                    refreshInterval: document.getElementById('refreshInterval').value,
+                    darkMode: document.getElementById('darkMode').checked,
+                    notifications: document.getElementById('notifications').checked,
+                    autoRefresh: document.getElementById('autoRefresh').checked,
+                };
+
+                localStorage.setItem('adminSettings', JSON.stringify(settings));
+                this.showNotification('Settings saved successfully', 'success');
+            }
+        }
+
+        // Initialize admin portal when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new ZawadiTapAdmin();
+        });
+    </script>
+</body>
+</html>
