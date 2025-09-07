@@ -31,7 +31,7 @@
     "@nestjs/swagger": "^11.2.0",
     "africastalking": "^0.7.4",
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
+    "cloudinary": "^1.41.3",
     "json2csv": "^6.0.0-alpha.2",
     "mongoose": "^8.17.0",
     "multer": "^2.0.2",
