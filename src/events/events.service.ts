@@ -22,6 +22,26 @@ export class EventsService {
     await createdEvent.save();
     return createdEvent;
   }
+  
+  async validateQrCode(qrCodeData: string): Promise<{ valid: boolean; event?: Event }> {
+  // Expect qrCodeData in format: "event:<id>"
+  if (!qrCodeData.startsWith('event:')) {
+    throw new BadRequestException('Invalid QR code format');
+  }
+
+  const eventId = qrCodeData.replace('event:', '');
+  if (!Types.ObjectId.isValid(eventId)) {
+    throw new BadRequestException('Invalid event ID');
+  }
+
+  const event = await this.eventModel.findById(eventId).populate('organization').exec();
+  if (!event) {
+    throw new NotFoundException('Event not found');
+  }
+
+  return { valid: true, event };
+}
+
 
   async findAll(): Promise<Event[]> {
     return this.eventModel.find().populate('organization').exec();

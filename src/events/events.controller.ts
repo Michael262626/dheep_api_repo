@@ -132,6 +132,29 @@ export class EventsController {
     return this.eventsService.remove(id);
   }
 
+  @Post('validate-qr')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Validate a QR code and fetch corresponding event' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        qrCodeData: {
+          type: 'string',
+          example: 'event:66e55dbcd7f3489083f1a6f9',
+          description: 'QR code data string generated for the event',
+        },
+      },
+      required: ['qrCodeData'],
+    },
+  })
+  @ApiResponse({ status: 200, description: 'QR code is valid and event details returned' })
+  @ApiResponse({ status: 400, description: 'Invalid QR code format' })
+  @ApiResponse({ status: 404, description: 'Event not found' })
+  validateQr(@Body('qrCodeData') qrCodeData: string) {
+    return this.eventsService.validateQrCode(qrCodeData);
+  }
+
   // User endpoints for event participation
   @Post(':id/participate')
   @UseGuards(JwtAuthGuard)
